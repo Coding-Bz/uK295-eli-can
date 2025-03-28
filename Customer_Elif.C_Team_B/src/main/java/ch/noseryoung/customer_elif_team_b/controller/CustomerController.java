@@ -1,18 +1,16 @@
 package ch.noseryoung.customer_elif_team_b.controller;
-
 import ch.noseryoung.customer_elif_team_b.exception.ResourceNotFoundException;
 import ch.noseryoung.customer_elif_team_b.model.Customer;
 import ch.noseryoung.customer_elif_team_b.repository.CustomerRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/")
@@ -22,7 +20,7 @@ public class CustomerController {
 
     //get emplyoees
 
-    @GetMapping("employees")
+    @GetMapping("customers")
     public List<Customer> getAllCustomer() {
         return this.customerRepository.findAll();
 
@@ -30,7 +28,7 @@ public class CustomerController {
 
 
 @GetMapping("/customers/{id}")
-    public ResponseEntity<Customer> getCustomerById(@PathVariable (value = "id") Long customerId)
+    public ResponseEntity<Customer> getCustomerById(@PathVariable (value = "id") UUID customerId)
     throws ResourceNotFoundException{
         Customer customer=customerRepository.findById(customerId)
                 .orElseThrow(()-> new ResourceNotFoundException("Customer not found for this id :: "+customerId));
@@ -40,5 +38,38 @@ public class CustomerController {
 }
 
 //save emplyoee
+@PostMapping("customers")
+    public Customer createCustomer(@RequestBody Customer customer){
+        return this.customerRepository.save(customer);
+}
+//update emplyoee
+    @PutMapping("customers/{id}")
+    public ResponseEntity<Customer> updateCustomer(@PathVariable(value = "id") UUID customerId,
+       @Valid @RequestBody Customer customerDetails) throws ResourceNotFoundException {
+
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(()-> new ResourceNotFoundException("Customer not found for this id :: "+customerId));
+        customer.setEmail(customerDetails.getEmail());
+        customer.setName(customerDetails.getName());
+        customer.setPhone(customerDetails.getPhone());
+        customer.setBirthday(customerDetails.getBirthday());
+
+return ResponseEntity.ok(this.customerRepository.save(customer));
+    }
+
+
+//delete employee
+    @DeleteMapping("customers/{id}")
+    public Map<String, Boolean> deleteEmployee(@PathVariable(value = "id") UUID customerId) throws ResourceNotFoundException {
+
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(()-> new ResourceNotFoundException("Customer not found for this id :: "+customerId));
+
+this.customerRepository.delete(customer);
+Map<String, Boolean> response = new HashMap<>();
+response.put("deleted", Boolean.TRUE);
+return response;
+    }
+
 
 }
