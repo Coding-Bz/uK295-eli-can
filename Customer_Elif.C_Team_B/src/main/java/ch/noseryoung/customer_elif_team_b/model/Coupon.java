@@ -1,11 +1,7 @@
 package ch.noseryoung.customer_elif_team_b.model;
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -35,6 +31,7 @@ public class Coupon {
 
 @ManyToOne(fetch = FetchType.LAZY)
 @JoinColumn(name = "customer_id", nullable = false)
+@JsonBackReference
 private Customer customer;
 
     public Coupon(String code, String amount, String expiry_date) {
@@ -50,10 +47,6 @@ private Customer customer;
         this.id = id;
     }
 
-
-   /* @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "coupon_id" )
-    private Set<Coupon> Coupons; */
 
 
 }

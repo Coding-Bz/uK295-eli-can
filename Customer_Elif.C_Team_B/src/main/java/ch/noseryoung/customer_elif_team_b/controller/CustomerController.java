@@ -1,7 +1,8 @@
 package ch.noseryoung.customer_elif_team_b.controller;
-import ch.noseryoung.customer_elif_team_b.exception.ResourceNotFoundException;
 import ch.noseryoung.customer_elif_team_b.model.Customer;
+import ch.noseryoung.customer_elif_team_b.repository.CouponRepository;
 import ch.noseryoung.customer_elif_team_b.repository.CustomerRepository;
+import ch.noseryoung.customer_elif_team_b.service.CustomerService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,11 @@ import java.util.UUID;
 public class CustomerController {
     @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
+    private CouponRepository couponRepository;
+    @Autowired
+    private CustomerService customerService;
+
 
     //get emplyoees
 
@@ -26,50 +32,35 @@ public class CustomerController {
 
     }
 
-
-@GetMapping("/customers/{id}")
-    public ResponseEntity<Customer> getCustomerById(@PathVariable (value = "id") UUID customerId)
-    throws ResourceNotFoundException{
-        Customer customer=customerRepository.findById(customerId)
-                .orElseThrow(()-> new ResourceNotFoundException("Customer not found for this id :: "+customerId));
-    return ResponseEntity.ok().body(customer);
-
-
-}
-
-//save emplyoee
-@PostMapping("customers")
-    public Customer createCustomer(@RequestBody Customer customer){
-        return this.customerRepository.save(customer);
-}
-//update emplyoee
-    @PutMapping("customers/{id}")
-    public ResponseEntity<Customer> updateCustomer(@PathVariable(value = "id") UUID customerId,
-       @Valid @RequestBody Customer customerDetails) throws ResourceNotFoundException {
-
-        Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(()-> new ResourceNotFoundException("Customer not found for this id :: "+customerId));
-        customer.setEmail(customerDetails.getEmail());
-        customer.setName(customerDetails.getName());
-        customer.setPhone(customerDetails.getPhone());
-        customer.setBirthday(customerDetails.getBirthday());
-
-return ResponseEntity.ok(this.customerRepository.save(customer));
+    @GetMapping("/customers/{customerId}")
+    public ResponseEntity<Customer> getCustomerById(@PathVariable UUID customerId) {
+        return ResponseEntity.ok(customerService.getCustomerById(customerId));
     }
 
 
-//delete employee
-    @DeleteMapping("customers/{id}")
-    public Map<String, Boolean> deleteEmployee(@PathVariable(value = "id") UUID customerId) throws ResourceNotFoundException {
 
-        Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(()-> new ResourceNotFoundException("Customer not found for this id :: "+customerId));
+@PutMapping("customers/{Id}")
+public ResponseEntity<Customer> updateCustomer(@PathVariable UUID id, @RequestBody Customer details) {
+    return ResponseEntity.ok(customerService.updateCustomer(id, details));
+}
 
-this.customerRepository.delete(customer);
-Map<String, Boolean> response = new HashMap<>();
-response.put("deleted", Boolean.TRUE);
-return response;
+
+    @DeleteMapping("/customers/{customerId}")
+    public Map<String, Boolean> deleteCustomer(@PathVariable UUID customerId) {
+        boolean deleted = customerService.deleteCustomer(customerId);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("deleted", deleted);
+        return response;
     }
 
 
+
+@PostMapping("/customers")
+public Customer createCustomer(@Valid @RequestBody Customer customer) {
+    return customerService.createCustomer(customer);
 }
+
+
+}
+
+
