@@ -12,7 +12,9 @@ Voraussetzungen:
 -Docker
 -Postman
 
+Anleitung
 
+Speichern Sie alle Daten, welche auf GitRepo:https://github.com/Coding-Bz/uK295-eli-can_Team_B zur Verfügung gestellt worden ist in den Ordner Testing und Customer und laden sie diese auf Ihrem eigenen Editor und Postman und führen Sie diese aus, es muss darauf geachtet werden das der Docker stets am laufen ist und man eine Internetverbindung hat.
 
 
 
