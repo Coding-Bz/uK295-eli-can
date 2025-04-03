@@ -1,6 +1,7 @@
 package ch.noseryoung.customer_elif_team_b.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
 import java.util.UUID;
@@ -15,16 +16,17 @@ import java.util.UUID;
 public class Coupon {
 
     @Id
-
-    @Column(name = "coupon_id", updatable = false, nullable = false)
+    @GeneratedValue
+    @Column(name = "coupon_id",  nullable = false)
     private UUID id;
 
-
+@NotEmpty
     private String code;
 
 
     private String amount;
 
+    @NotEmpty
     @Column(name = "expiry_date")
     private String expiryDate;
 

@@ -7,16 +7,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
 public class CustomerService {
+    private final CustomerRepository customerRepository;
+    private final CouponRepository couponRepository;
 
     @Autowired
-    private CustomerRepository customerRepository;
-
-    @Autowired
-    private CouponRepository couponRepository;
+    public CustomerService(CouponRepository couponRepository, CustomerRepository customerRepository) {
+        this.couponRepository = couponRepository;
+        this.customerRepository = customerRepository;
+    }
 
     public Customer createCustomer(Customer customer) {
         Customer savedCustomer = customerRepository.save(customer);
@@ -31,6 +34,10 @@ public class CustomerService {
         return savedCustomer;
     }
 
+    public Coupon createCoupon(Coupon coupon) {
+        return couponRepository.save(coupon);
+    }
+
     public Customer updateCustomer(UUID customerId, Customer customerDetails) {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
@@ -39,23 +46,45 @@ public class CustomerService {
         customer.setName(customerDetails.getName());
         customer.setPhone(customerDetails.getPhone());
         customer.setBirthday(customerDetails.getBirthday());
+        customer.setCoupons(customerDetails.getCoupons());
 
         return customerRepository.save(customer);
     }
 
+
+    public Coupon updateCoupon(UUID couponId, Coupon couponDetails) {
+        Coupon coupon= couponRepository.findById(couponId)
+                .orElseThrow(() -> new RuntimeException("Coupon not found"));
+                coupon.setAmount(couponDetails.getAmount());
+                coupon.setCode(couponDetails.getCode());
+                coupon.setExpiryDate(couponDetails.getExpiryDate());
+
+                return couponRepository.save(coupon);
+    }
+
+    public List<Customer> getAllCustomers(){
+        return customerRepository.findAll();
+    }
 
     public Customer getCustomerById(UUID customerId) {
         return customerRepository.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
     }
 
-    public boolean deleteCustomer(UUID customerId) {
+    public Coupon getCouponById(UUID couponId) {
+        return couponRepository.findById(couponId)
+                .orElseThrow(() -> new RuntimeException("Coupon not found"));
+    }
+
+    public void deleteCustomer(UUID customerId) {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
         customerRepository.delete(customer);
-        return true;
     }
 
-
-
+    public void deleteCoupon(UUID couponId) {
+        Coupon coupon = couponRepository.findById(couponId)
+                .orElseThrow(() -> new RuntimeException("Coupon not found"));
+        couponRepository.delete(coupon);
+    }
 }

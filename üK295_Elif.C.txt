@@ -1,0 +1,21 @@
+Info:
+Dieser Ordner ist für den üK 295 erstellt worden von Elif Canmaya.
+
+
+Programm austesten:
+
+Voraussetzungen:
+-Eine funktionierende Maschine (Computer)
+-Internetzugang
+-Funktionierendes Editor IntelliJ strengstens empfohlen 
+-Import der nötigen Bibliotheken
+-Docker
+-Postman
+
+
+
+
+
+
+
+

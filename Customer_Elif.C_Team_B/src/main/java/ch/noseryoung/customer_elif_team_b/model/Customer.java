@@ -17,15 +17,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @Table(name="customer")
 public class Customer {
-
-
-
-
     @Id
-    @NotEmpty(message = "Darf nicht leer sein")
-    @NotBlank
-    @Size(min=36, max=36)
-    @NotEmpty
+    @GeneratedValue
     @Column(name = "customer_id", updatable = false, nullable = false)
     private UUID id;
 
@@ -48,10 +41,5 @@ public class Customer {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
    private Set<Coupon> coupons;
-
-    public Set<Coupon> getCoupons(){
-        return coupons;
-    }
-
 
 }
